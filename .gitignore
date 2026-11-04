@@ -1,0 +1,16 @@
+# Local database, backups and dependencies
+data/
+backups/
+node_modules/
+# Credentials and machine-local settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+# Generated logs and OS/editor files
+*.log
+.DS_Store
+.idea/
+.vscode/
+coverage/

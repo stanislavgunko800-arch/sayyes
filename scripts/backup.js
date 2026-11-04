@@ -1,0 +1,17 @@
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const source=path.join(process.env.DATA_DIR||path.join(root,'data'),'salon.json');
+const targetDir=process.env.BACKUP_DIR||path.join(root,'backups');
+const bytes=await readFile(source);
+const data=JSON.parse(bytes.toString('utf8'));
+if(!Array.isArray(data.clients)||!Array.isArray(data.appointments))throw Error('Unexpected database structure');
+await mkdir(targetDir,{recursive:true,mode:0o700});
+const target=path.join(targetDir,'salon-'+new Date().toISOString().replaceAll(':','-')+'.json');
+await writeFile(target,bytes,{flag:'wx',mode:0o600});
+const digest=b=>createHash('sha256').update(b).digest('hex');
+if(digest(await readFile(target))!==digest(bytes))throw Error('Backup verification failed');
+console.log('Verified backup: '+target);
+console.log('Keep another copy outside this environment. Browser preview data is not included.');
