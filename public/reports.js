@@ -1,3 +1,4 @@
+import {scheduleMinutes,scheduleBreaks} from './schedule-engine.js';
 import {schedule,mins,today} from './domain.js';
 import {receipts} from './operations.js';
 const reportRound=n=>Math.round((n+Number.EPSILON)*1000)/1000;
@@ -12,7 +13,7 @@ export function workloadReport(s,f){
  return employees.map(e=>{let work=0,occupied=0,days=0,planned=0;const detail=dates.map(date=>{
  const g=schedule(s,e.id,date);let capacity=0,used=0;const visits=s.appointments.filter(a=>a.employeeId===e.id&&a.date===date&&a.status!=='cancelled');
  // Minute occupancy is a union, clipped to working time and excluding the break.
- if(!g.off)for(let m=mins(g.start);m<mins(g.end);m++){if(g.breakStart&&m>=mins(g.breakStart)&&m<mins(g.breakEnd))continue;capacity++;if(visits.some(a=>m>=a.start&&m<a.start+a.duration))used++;}
+ if(!g.off)for(let m=mins(g.start);m<scheduleMinutes(g.end);m++){if(scheduleBreaks(g).some(br=>m>=scheduleMinutes(br.start)&&m<scheduleMinutes(br.end)))continue;capacity++;if(visits.some(a=>m>=a.start&&m<a.start+a.duration))used++;}
  const booked=visits.reduce((n,a)=>n+a.duration,0);work+=capacity;occupied+=used;planned+=booked;if(capacity)days++;
  return {date,workHours:reportRound(capacity/60),occupiedHours:reportRound(used/60),load:capacity?reportRound(used/capacity*100):null};
  });return {employeeId:e.id,name:e.name,days,workHours:reportRound(work/60),occupiedHours:reportRound(occupied/60),idleHours:reportRound((work-occupied)/60),load:work?reportRound(occupied/work*100):null,bookedHours:reportRound(planned/60),future:s.appointments.filter(a=>a.employeeId===e.id&&a.date>f.to&&!['cancelled','refunded'].includes(a.status)).length,detail};});

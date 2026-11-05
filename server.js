@@ -31,6 +31,7 @@ http.createServer(async(req,res)=>{
  if(url==='/api/access'&&req.method==='GET')return send(res,200,accessView(state,user));
  if(url==='/api/public-state'&&req.method==='GET'){
  const visible={};for(const key of ['employees','services','schedules','workplaces'])visible[key]=structuredClone(state[key]);
+ visible.schedules=visible.schedules.map(({employeeId,date,start,end,off,breakStart,breakEnd,breaks})=>({employeeId,date,start,end,off,breakStart,breakEnd,breaks}));
  visible.employees=visible.employees.filter(e=>e.active&&!e.fired&&!e.archived&&e.onlineEnabled!==false).map(({id,name,role,serviceIds})=>({id,name,role,serviceIds,active:true}));
  visible.services=visible.services.filter(v=>v.active).map(({id,name,price,duration,employeeIds,category})=>({id,name,price,duration,employeeIds,category,active:true,materials:[],baseCost:0}));
  visible.bookingLinks=state.bookingLinks.filter(l=>l.active).map(({id,serviceId,employeeId})=>({id,serviceId,employeeId}));
@@ -44,7 +45,7 @@ http.createServer(async(req,res)=>{
  }
  if(url==='/api/state'&&req.method==='GET')return send(res,200,{...projectState(state,user),sessionUser:user,...(user.root||user.permissions?.['access.manage']?{accessAccounts:accessView(state,user).accounts}:{})});
  if(url.startsWith('/api/')&&req.method==='POST'){
-  let body='';for await(const chunk of req){body+=chunk;if(body.length>(url==='/api/import-client-batch'?1000000:50000))return send(res,413,{error:'Слишком большой запрос'});}
+  let body='';for await(const chunk of req){body+=chunk;if(body.length>(['/api/import-client-batch','/api/schedule-grid'].includes(url)?1000000:50000))return send(res,413,{error:'Слишком большой запрос'});}
   const b=JSON.parse(body);const authAttempt=['/api/auth/login','/api/auth/accept'].includes(url),ip=req.socket.remoteAddress;
   if(authAttempt){const entry=failures.get(ip);if(entry&&entry.until>Date.now()&&entry.count>=30)return send(res,429,{error:'Слишком много попыток. Повторите через 15 минут.'});}
   let result={ok:true},sessionToken=null;
@@ -70,7 +71,7 @@ http.createServer(async(req,res)=>{
   if(sessionToken!==null)cookie(res,sessionToken);return send(res,200,result);
  }
  if(url.startsWith('/api/'))return send(res,404,{error:'Метод не найден'});
- const assets={'/access-policy.js':'access-policy.js','/reports.js':'reports.js','/logo.png':'logo.png','/operations.js':'operations.js','/domain.js':'domain.js','/app.js':'app.js','/style.css':'style.css'};const asset=assets[url]||'index.html';
+ const assets={'/schedule-engine.js':'schedule-engine.js','/access-policy.js':'access-policy.js','/reports.js':'reports.js','/logo.png':'logo.png','/operations.js':'operations.js','/domain.js':'domain.js','/app.js':'app.js','/style.css':'style.css'};const asset=assets[url]||'index.html';
  res.writeHead(200,{'Content-Type':asset.endsWith('.png')?'image/png':asset.endsWith('.js')?'text/javascript':asset.endsWith('.css')?'text/css':'text/html; charset=utf-8'});res.end(await readFile(path.join(root,'public',asset)));
  }catch(e){send(res,e.status||400,{error:e.message});}
 }).listen(Number(process.env.PORT||3000),process.env.HOST||'0.0.0.0',()=>console.log('SayYes listening on port '+(process.env.PORT||3000)));

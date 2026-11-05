@@ -37,7 +37,7 @@ export function hasPermission(principal,key){return principal?.root===true||prin
 export function actionPermissions(action,b={}){
  const groups={
  'appointments':['bookings.create','clients.contacts'],'appointment-edit':['bookings.move'],'appointment-confirm':['bookings.confirm'],
- 'schedule':['schedule.write'],'schedule-pattern':['schedule.write'],'staff-schedule':['schedule.write'],'workplace-shift':['schedule.write'],
+ 'schedule-grid':['schedule.write'],'schedule-selection':['schedule.write'],'schedule-copy':['schedule.write'],'schedule-template':['schedule.write'],'absence-type':['schedule.write'],'schedule':['schedule.write'],'schedule-pattern':['schedule.write'],'staff-schedule':['schedule.write'],'workplace-shift':['schedule.write'],
  'clients':['clients.write','clients.contacts'],'import-clients':['clients.write','clients.contacts'],'import-client-batch':['clients.write','clients.contacts'],
  'employees':['staff.write'],'position':['staff.write'],'staff-order':['staff.write'],'staff-status':['staff.write'],
  'services':['services.write'],'categories':['services.write'],'service-order':['services.write'],'expense-template':['services.write'],'apply-expense-template':['services.write'],

@@ -1,3 +1,4 @@
+import {expandScheduleSelection,applyScheduleEntries,normalizeSchedule,scheduleBreaks} from './schedule-engine.js';
 import {uid,today,stock,cashBalance,payroll,slots,mins,mutate} from './domain.js';
 const round = n => Math.round((n + Number.EPSILON) * 100) / 100;
 const value = (n, min=0, max=1e9) => { n=Number(n); if(!Number.isFinite(n)||n<min||n>max)throw Error('Проверьте числовые значения');return n; };
@@ -38,7 +39,24 @@ function moneyOut(s,amount,reason,method){
 function notification(s,event,a){const template=s.messageTemplates.find(t=>t.event===event&&t.active);if(!template)return;const vars={client:a.name,service:a.service,date:a.date,time:a.time,salon:s.settings.name};const body=template.body.replace(/\{(\w+)\}/g,(all,k)=>vars[k]??all);s.outbox.push({id:uid(),date:today(),event,appointmentId:a.id,body,status:'Не отправлено — канал не подключён'});}
 export function extendedMutation(s,action,b){
  const date=today(),id=uid();
- if(action==='position'){
+ if(action==='schedule-grid'){
+  if(!Array.isArray(b.entries)||!b.entries.length||b.entries.length>3660)throw Error('Выберите от 1 до 3660 дней сотрудников');
+  for(const row of b.entries){const e=get(s,'employees',row.employeeId);if(e.fired||e.archived)throw Error('Сотрудник уволен или в архиве');}
+  applyScheduleEntries(s,b.entries,b.allowConflicts===true);
+ }else if(action==='schedule-selection'){
+  applyScheduleEntries(s,expandScheduleSelection(s,b),b.allowConflicts===true);
+ }else if(action==='schedule-copy'){
+  const source=get(s,'employees',b.sourceEmployeeId);dateValue(b.from);dateValue(b.to);const days=(Date.parse(b.to)-Date.parse(b.from))/86400000+1;
+  if(days<1||days>366||!Array.isArray(b.employeeIds)||!b.employeeIds.length||days*b.employeeIds.length>3660)throw Error('Выберите сотрудников и период до 366 дней');
+  const entries=[];for(const key of new Set(b.employeeIds)){const e=get(s,'employees',key);if(e.fired||e.archived||key===source.id)throw Error('Выберите другого действующего сотрудника');for(let i=0;i<days;i++){const date=new Date(Date.parse(b.from)+i*86400000).toISOString().slice(0,10),g=s.schedules.find(g=>g.employeeId===source.id&&g.date===date)||{start:'10:00',end:'20:00',off:false};entries.push({...g,employeeId:key,date,breaks:b.includeBreaks===true?scheduleBreaks(g):[],breakStart:'',breakEnd:''});}}
+  applyScheduleEntries(s,entries,b.allowConflicts===true);
+ }else if(action==='schedule-template'){
+  const config={mode:b.mode||'range',interval:Number(b.interval||1),unit:b.unit||'days',onDays:Number(b.onDays||2),offDays:Number(b.offDays||2),weekdays:b.weekdays||[],start:b.start,end:b.end,breaks:b.breaks||[],typeId:b.typeId||'work'};
+  if(!s.employees.length)throw Error('Сначала добавьте сотрудника');const entries=expandScheduleSelection(s,{...config,cells:[{employeeId:s.employees.find(e=>!e.fired&&!e.archived)?.id,date}]});for(const row of entries)normalizeSchedule(s,row);
+  const entry={...config,id:b.id||id,name:textValue(b.name)};if(s.staffTemplates.some(t=>t.id!==entry.id&&t.name.toLowerCase()===entry.name.toLowerCase()))throw Error('Шаблон с таким именем уже существует');if(b.id)Object.assign(get(s,'staffTemplates',b.id),entry);else s.staffTemplates.push(entry);
+ }else if(action==='absence-type'){
+  const entry={id:b.id||id,name:textValue(b.name),color:String(b.color||'#e6e8e5'),system:false};if(!/^#[0-9a-f]{6}$/i.test(entry.color))throw Error('Выберите цвет');if(s.absenceTypes.some(t=>t.id!==entry.id&&t.name.toLowerCase()===entry.name.toLowerCase()))throw Error('Такой тип уже существует');if(b.id){const old=get(s,'absenceTypes',b.id);if(old.system)throw Error('Системный тип нельзя изменить');Object.assign(old,entry);}else s.absenceTypes.push(entry);
+ }else if(action==='position'){
   const name=textValue(b.name);if(s.positions.some(p=>p.id!==b.id&&p.name.toLowerCase()===name.toLowerCase()))throw Error('Такая должность уже существует');const entry={id:b.id||id,name,description:String(b.description||'')};if(b.id)Object.assign(get(s,'positions',b.id),entry);else s.positions.push(entry);
  }else if(action==='staff-order'){
   const index=s.employees.findIndex(e=>e.id===b.id),step=Number(b.direction);if(index<0||![-1,1].includes(step))throw Error('Проверьте порядок');const target=index+step;if(target>=0&&target<s.employees.length)[s.employees[index],s.employees[target]]=[s.employees[target],s.employees[index]];

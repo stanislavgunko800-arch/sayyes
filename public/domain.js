@@ -1,3 +1,4 @@
+import {scheduleMinutes,scheduleBreaks,defaultAbsenceTypes,applyScheduleEntries} from './schedule-engine.js';
 import {extendState, extendedMutation, receipts, payoutTotals} from './operations.js';
 export const uid=()=>globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2);
 export const today=()=>new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Tbilisi'});
@@ -17,13 +18,14 @@ export function upgrade(s){for(const k of ['employees','services','clients','app
  for(const p of s.products){p.brand??='';p.lossFactor??=1;}
  for(const a of s.appointments)if(a.status==='paid'){a.amount??=a.price;a.paidDate??=a.date;}
  for(const p of s.purchases)p.locations??={[p.warehouseId]:p.remaining};
+ s.absenceTypes??=defaultAbsenceTypes();
  extendState(s);return s;
 }
 export function schedule(s,employeeId,date){return s.schedules.find(x=>x.employeeId===employeeId&&x.date===date)||{employeeId,date,start:'10:00',end:'20:00',off:false,breakStart:'',breakEnd:''};}
 export function slots(s,employeeId,serviceId,date,publicMode=false,holdToken=''){const service=s.services.find(x=>x.id===serviceId&&x.active),e=s.employees.find(x=>x.id===employeeId&&x.active);if(!service||!e||e.fired||e.archived||publicMode&&e.onlineEnabled===false||e.serviceIds&&!e.serviceIds.includes(serviceId)||service.employeeIds.length&&!service.employeeIds.includes(employeeId))return [];
  const g=schedule(s,employeeId,date);if(g.off||publicMode&&!s.settings.online)return [];const result=[];
- for(let t=mins(g.start);t+service.duration<=mins(g.end);t+=Number(s.settings.slotStep)){
- if(g.breakStart&&g.breakEnd&&t<mins(g.breakEnd)&&t+service.duration>mins(g.breakStart))continue;
+ for(let t=mins(g.start);t+service.duration<=scheduleMinutes(g.end);t+=Number(s.settings.slotStep)){
+ if(scheduleBreaks(g).some(br=>t<scheduleMinutes(br.end)&&t+service.duration>scheduleMinutes(br.start)))continue;
  if((s.holds||[]).some(h=>h.token!==holdToken&&h.expiresAt>Date.now()&&h.employeeId===employeeId&&h.date===date&&t<h.start+h.duration&&t+service.duration>h.start))continue;
  if(s.appointments.some(a=>a.employeeId===employeeId&&a.date===date&&a.status!=='cancelled'&&t<a.start+a.duration&&t+service.duration>a.start))continue;
  if(publicMode&&new Date(`${date}T${time(t)}:00+04:00`).getTime()<Date.now()+s.settings.leadHours*3600000)continue;
@@ -46,10 +48,7 @@ export function mutate(s,action,b){upgrade(s);const id=uid(),date=today(),find=(
  if(action==='promotions'&&v.end<v.start)throw Error('Проверьте период акции');
  if(b.id)Object.assign(find(action,b.id),v);else s[action].push(v);
  }else if(action==='schedule'){
- find('employees',b.employeeId);validDate(b.date);const g={employeeId:b.employeeId,date:b.date,start:b.start,end:b.end,off:!!b.off,breakStart:b.breakStart||'',breakEnd:b.breakEnd||''};
- if(!g.off){if(mins(g.end)<=mins(g.start))throw Error('Конец смены должен быть позже начала');if(!!g.breakStart!==!!g.breakEnd)throw Error('Укажите обе границы перерыва');if(g.breakStart&&(mins(g.breakStart)<mins(g.start)||mins(g.breakEnd)>mins(g.end)||mins(g.breakStart)>=mins(g.breakEnd)))throw Error('Перерыв должен быть внутри смены');}
- if(s.appointments.some(a=>a.employeeId===g.employeeId&&a.date===g.date&&a.status!=='cancelled'&&(g.off||a.start<mins(g.start)||a.start+a.duration>mins(g.end)||g.breakStart&&a.start<mins(g.breakEnd)&&a.start+a.duration>mins(g.breakStart))))throw Error('График конфликтует с существующими записями');
- s.schedules=s.schedules.filter(x=>x.employeeId!==g.employeeId||x.date!==g.date);s.schedules.push(g);
+ applyScheduleEntries(s,[b],b.allowConflicts===true);
  }else if(action==='appointments'){
  if(b.publicMode&&b.holdToken&&!s.holds.some(h=>h.token===b.holdToken&&h.expiresAt>Date.now()&&h.employeeId===b.employeeId&&h.serviceId===b.serviceId&&h.date===b.date&&h.time===b.time))throw Error('Бронь истекла. Выберите время снова');
  const link=b.publicMode&&b.bookingLinkId?find('bookingLinks',b.bookingLinkId):null;if(link&&!link.active)throw Error('Ссылка записи отключена');
