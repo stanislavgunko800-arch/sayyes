@@ -39,7 +39,7 @@ http.createServer(async(req,res)=>{
  }
  if(url==='/api/state'&&req.method==='GET')return send(res,200,state);
  if(url.startsWith('/api/')&&req.method==='POST'){
-  let body='';for await(const chunk of req){body+=chunk;if(body.length>20000)return send(res,413,{error:'Слишком большой запрос'});}
+  let body='';for await(const chunk of req){body+=chunk;if(body.length>(url==='/api/import-client-batch'?1000000:20000))return send(res,413,{error:'Слишком большой запрос'});}
   const b=JSON.parse(body);let action=url.slice(5);
   if(action==='public-book'){
    if(!/^[a-f0-9-]{36}$/.test(b.manageToken||'')||!/^[a-f0-9-]{36}$/.test(b.holdToken||''))throw Error('Выберите свободное время заново');
