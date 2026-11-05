@@ -48,7 +48,7 @@ http.createServer(async(req,res)=>{
 
   const task=queue.then(async()=>{const previous=structuredClone(state);try{const next=structuredClone(state);mutate(next,action,b);await writeFile(file+'.tmp',JSON.stringify(next));await rename(file+'.tmp',file);state=next;}catch(e){state=previous;throw e;}});queue=task.catch(()=>{});await task;return send(res,200,{ok:true});
  }
- const asset=url==='/operations.js'?'operations.js':url==='/domain.js'?'domain.js':url==='/app.js'?'app.js':url==='/style.css'?'style.css':'index.html';
- res.writeHead(200,{'Content-Type':asset.endsWith('.js')?'text/javascript':asset.endsWith('.css')?'text/css':'text/html; charset=utf-8'});res.end(await readFile(path.join(root,'public',asset)));
+ const asset=url==='/logo.png'?'logo.png':url==='/operations.js'?'operations.js':url==='/domain.js'?'domain.js':url==='/app.js'?'app.js':url==='/style.css'?'style.css':'index.html';
+ res.writeHead(200,{'Content-Type':asset.endsWith('.png')?'image/png':asset.endsWith('.js')?'text/javascript':asset.endsWith('.css')?'text/css':'text/html; charset=utf-8'});res.end(await readFile(path.join(root,'public',asset)));
  }catch(e){send(res,400,{error:e.message});}
 }).listen(Number(process.env.PORT||3000),'0.0.0.0',()=>console.log('SayYes listening on port '+(process.env.PORT||3000)));
