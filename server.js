@@ -62,7 +62,7 @@ http.createServer(async(req,res)=>{
     if(action==='public-book'){
      if(!/^[a-f0-9-]{36}$/.test(b.manageToken||'')||!/^[a-f0-9-]{36}$/.test(b.holdToken||''))throw Error('Выберите свободное время заново');action='appointments';b.publicMode=true;
     }else if(!['hold-slot','cancel-booking'].includes(action)){authorizeMutation(next,user,action,b);}
-    mutate(next,action,b);
+    b._actor=user?{id:user.id,name:user.name}:null;mutate(next,action,b);
     if(!publicApi.has(url)){if(next.audit[0]){next.audit[0].actorId=user.id;next.audit[0].actorName=user.name;}revokeEmployment(next,user);}
    }
    await save(next);
@@ -71,7 +71,7 @@ http.createServer(async(req,res)=>{
   if(sessionToken!==null)cookie(res,sessionToken);return send(res,200,result);
  }
  if(url.startsWith('/api/'))return send(res,404,{error:'Метод не найден'});
- const assets={'/bar-domain.js':'bar-domain.js','/schedule-engine.js':'schedule-engine.js','/access-policy.js':'access-policy.js','/reports.js':'reports.js','/logo.png':'logo.png','/operations.js':'operations.js','/domain.js':'domain.js','/app.js':'app.js','/style.css':'style.css'};const asset=assets[url]||'index.html';
+ const assets={'/pos-domain.js':'pos-domain.js','/bar-domain.js':'bar-domain.js','/schedule-engine.js':'schedule-engine.js','/access-policy.js':'access-policy.js','/reports.js':'reports.js','/logo.png':'logo.png','/operations.js':'operations.js','/domain.js':'domain.js','/app.js':'app.js','/style.css':'style.css'};const asset=assets[url]||'index.html';
  res.writeHead(200,{'Content-Type':asset.endsWith('.png')?'image/png':asset.endsWith('.js')?'text/javascript':asset.endsWith('.css')?'text/css':'text/html; charset=utf-8'});res.end(await readFile(path.join(root,'public',asset)));
  }catch(e){send(res,e.status||400,{error:e.message});}
 }).listen(Number(process.env.PORT||3000),process.env.HOST||'0.0.0.0',()=>console.log('SayYes listening on port '+(process.env.PORT||3000)));
