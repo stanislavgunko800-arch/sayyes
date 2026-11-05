@@ -18,3 +18,5 @@ textarea{font:inherit;border:1px solid #d8dfd9;border-radius:10px;padding:12px;m
 @media print{body:has(#price-labels) aside,body:has(#price-labels) header,body:has(#price-labels) .heading,body:has(#price-labels) .workspace-tabs,body:has(#price-labels) .panel-heading,body:has(#price-labels) .no-label-print,body:has(#price-labels) .notice,body:has(#price-labels) footer{display:none!important}body:has(#price-labels) main,body:has(#price-labels) .content{margin:0!important;padding:0!important}.price-labels{grid-template-columns:repeat(3,1fr)}}
 
 .panel>.hub-grid{padding:20px}
+
+.staff-working{background:#e8eee9;color:#22392d;min-width:95px;padding:8px;border:1px solid #d8e1d9}.staff-working small{display:block}#modal fieldset{margin:16px 0;padding:12px;border:1px solid #ddd}

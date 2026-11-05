@@ -1,11 +1,11 @@
-import {uid,today,stock,cashBalance,payroll,slots,mins} from './domain.js';
+import {uid,today,stock,cashBalance,payroll,slots,mins,mutate} from './domain.js';
 const round = n => Math.round((n + Number.EPSILON) * 100) / 100;
 const value = (n, min=0, max=1e9) => { n=Number(n); if(!Number.isFinite(n)||n<min||n>max)throw Error('Проверьте числовые значения');return n; };
 const textValue = v => { const t=String(v??'').trim();if(!t)throw Error('Заполните обязательные поля');return t; };
 const dateValue = d => { if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||new Date(d+'T12:00Z').toISOString().slice(0,10)!==d)throw Error('Неверная дата');return d; };
 const get = (s,k,id) => { const v=s[k].find(x=>x.id===id);if(!v)throw Error('Запись не найдена: '+k);return v; };
 export function extendState(s){
- for(const k of ['sales','purchaseDocuments','payouts','workplaceShifts','bonusLedger','inventories','messageTemplates','outbox','schedulePatterns','expenseTemplates','supplierOrders','zones','holds','barOrders','importBatches','bookingLinks'])s[k]??=[];
+ for(const k of ['sales','purchaseDocuments','payouts','workplaceShifts','bonusLedger','inventories','messageTemplates','outbox','schedulePatterns','expenseTemplates','supplierOrders','zones','holds','barOrders','importBatches','bookingLinks','positions','staffTemplates'])s[k]??=[];
  s.paymentMethods??=[{id:'cash',name:'Наличные',kind:'cash',fee:0,active:true},{id:'card',name:'Терминал',kind:'card',fee:0,active:true},{id:'transfer',name:'Перевод',kind:'transfer',fee:0,active:true}];
  s.terminals??=[];
  s.settings={holdMinutes:10,requireConfirmation:false,allowClientCancel:true,lateCancelHours:24,loyaltyActive:true,productBonusPercent:0,bonusMaxPercent:30,bonusExpiryMonths:0,familyBonus:false,familyBonusRates:{},...s.settings};
@@ -38,7 +38,21 @@ function moneyOut(s,amount,reason,method){
 function notification(s,event,a){const template=s.messageTemplates.find(t=>t.event===event&&t.active);if(!template)return;const vars={client:a.name,service:a.service,date:a.date,time:a.time,salon:s.settings.name};const body=template.body.replace(/\{(\w+)\}/g,(all,k)=>vars[k]??all);s.outbox.push({id:uid(),date:today(),event,appointmentId:a.id,body,status:'Не отправлено — канал не подключён'});}
 export function extendedMutation(s,action,b){
  const date=today(),id=uid();
- if(action==='booking-link'){
+ if(action==='position'){
+  const name=textValue(b.name);if(s.positions.some(p=>p.id!==b.id&&p.name.toLowerCase()===name.toLowerCase()))throw Error('Такая должность уже существует');const entry={id:b.id||id,name,description:String(b.description||'')};if(b.id)Object.assign(get(s,'positions',b.id),entry);else s.positions.push(entry);
+ }else if(action==='staff-order'){
+  const index=s.employees.findIndex(e=>e.id===b.id),step=Number(b.direction);if(index<0||![-1,1].includes(step))throw Error('Проверьте порядок');const target=index+step;if(target>=0&&target<s.employees.length)[s.employees[index],s.employees[target]]=[s.employees[target],s.employees[index]];
+ }else if(action==='staff-status'){
+  const e=get(s,'employees',b.id);if(!['fire','archive','restore'].includes(b.status))throw Error('Неверный статус');
+  if(b.status!=='restore'&&s.appointments.some(a=>a.employeeId===e.id&&a.date>=date&&['pending','booked'].includes(a.status)))throw Error('Сначала перенесите или отмените будущие записи сотрудника');
+  if(b.status==='restore'){e.fired=false;e.archived=false;e.active=true;e.restoredAt=new Date().toISOString();}else {e.active=false;e[b.status==='fire'?'fired':'archived']=true;e.statusChangedAt=new Date().toISOString();}
+ }else if(action==='staff-schedule'){
+  if(!Array.isArray(b.employeeIds)||!b.employeeIds.length||b.employeeIds.length>100)throw Error('Выберите сотрудников');dateValue(b.from);dateValue(b.to);const count=Math.round((Date.parse(b.to)-Date.parse(b.from))/86400000)+1;if(count<1||count>366)throw Error('Период от 1 до 366 дней');
+  const mode=b.mode||'range';if(!['range','weekdays','cycle','off'].includes(mode))throw Error('Неверный шаблон');const on=value(b.onDays||2,1,31),off=value(b.offDays||2,1,31);if(!Number.isInteger(on)||!Number.isInteger(off))throw Error('Дни должны быть целыми');
+  if(mode==='weekdays'&&(!Array.isArray(b.weekdays)||!b.weekdays.length||b.weekdays.some(d=>!Number.isInteger(Number(d))||d<0||d>6)))throw Error('Выберите дни недели');
+  for(const key of new Set(b.employeeIds)){const e=get(s,'employees',key);if(e.fired||e.archived)throw Error('Сотрудник уволен или в архиве');for(let i=0;i<count;i++){const date=new Date(Date.parse(b.from)+i*86400000).toISOString().slice(0,10),weekday=new Date(date+'T12:00Z').getUTCDay();mutate(s,'schedule',{employeeId:key,date,start:b.start||'10:00',end:b.end||'20:00',breakStart:b.breakStart||'',breakEnd:b.breakEnd||'',off:mode==='off'||mode==='weekdays'&&!b.weekdays.map(Number).includes(weekday)||mode==='cycle'&&i%(on+off)>=on});}}
+  if(b.saveAs)s.staffTemplates.push({id,name:textValue(b.saveAs),mode,start:b.start,end:b.end,breakStart:b.breakStart||'',breakEnd:b.breakEnd||'',onDays:on,offDays:off,weekdays:b.weekdays||[]});
+ }else if(action==='booking-link'){
   if(b.serviceId)get(s,'services',b.serviceId);if(b.employeeId)get(s,'employees',b.employeeId);
   const entry={id:b.id||id,name:textValue(b.name),serviceId:b.serviceId||'',employeeId:b.employeeId||'',source:String(b.source||'Онлайн'),active:b.active!==false};
   if(b.id)Object.assign(get(s,'bookingLinks',b.id),entry);else s.bookingLinks.push(entry);

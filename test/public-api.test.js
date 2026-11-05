@@ -21,10 +21,11 @@ test('protected admin API and public booking expose no client or financial data'
   const publicLinks=(await (await fetch(base+'/api/public-state')).json()).bookingLinks;assert.equal(publicLinks.length,1);assert(!JSON.stringify(publicLinks).includes('Private'));assert(!('source'in publicLinks[0]));
   const holdToken=crypto.randomUUID(),manageToken=crypto.randomUUID(),booking={employeeId:'1',serviceId:'1',date:'2027-12-10',time:'10:00',bookingLinkId:publicLinks[0].id};
   assert.equal((await post('/api/hold-slot',{...booking,token:holdToken})).status,200);
-  assert.equal((await post('/api/public-book',{...booking,holdToken,manageToken,name:'Secret Client',phone:'555'})).status,200);
-  const after=await (await fetch(base+'/api/public-state')).json();const serialized=JSON.stringify(after);assert(!serialized.includes('Secret Client'));assert(!serialized.includes('555'));assert(!serialized.includes(manageToken));assert.equal(after.appointments.length,1);
+  assert.equal((await post('/api/public-book',{...booking,holdToken,manageToken,name:'Secret Client',phone:'+995555000777'})).status,200);
+  const after=await (await fetch(base+'/api/public-state')).json();const serialized=JSON.stringify(after);assert(!serialized.includes('Secret Client'));assert(!serialized.includes('+995555000777'));assert(!serialized.includes(manageToken));assert.equal(after.appointments.length,1);
   const managed=await (await fetch(base+'/api/manage-booking',{headers:{'X-Booking-Token':manageToken}})).json();assert.equal(managed.service,'Стрижка и укладка');assert(!('clientId'in managed));
   assert.equal((await post('/api/cancel-booking',{token:manageToken})).status,200);
+  assert.equal((await post('/api/employees',{id:'2',name:'Private Staff',role:'Мастер',phone:'PRIVATEPHONE',email:'private@example.invalid',onlineEnabled:false},{Authorization:auth})).status,200);const staffPublic=await (await fetch(base+'/api/public-state')).json();assert(!staffPublic.employees.some(e=>e.id==='2'));assert(!JSON.stringify(staffPublic).includes('PRIVATEPHONE'));assert(!JSON.stringify(staffPublic).includes('private@example.invalid'));
   assert.equal((await post('/api/shift-open',{opening:0})).status,401);
   assert.equal((await post('/api/shift-open',{opening:0},{Authorization:auth,Origin:'https://other.invalid'})).status,403);
  }finally{child.kill();await stopped;await rm(dir,{recursive:true,force:true});}

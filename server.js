@@ -27,7 +27,7 @@ http.createServer(async(req,res)=>{
  }
  if(url==='/api/public-state'&&req.method==='GET'){
  const visible={};for(const key of ['employees','services','schedules','workplaces'])visible[key]=structuredClone(state[key]);
- visible.employees=visible.employees.filter(e=>e.active).map(({id,name,role})=>({id,name,role,active:true}));
+ visible.employees=visible.employees.filter(e=>e.active&&!e.fired&&!e.archived&&e.onlineEnabled!==false).map(({id,name,role,serviceIds})=>({id,name,role,serviceIds,active:true}));
  visible.services=visible.services.filter(v=>v.active).map(({id,name,price,duration,employeeIds,category})=>({id,name,price,duration,employeeIds,category,active:true,materials:[],baseCost:0}));
  visible.bookingLinks=state.bookingLinks.filter(l=>l.active).map(({id,serviceId,employeeId})=>({id,serviceId,employeeId}));
  visible.settings=Object.fromEntries(['name','address','phone','description','online','slotStep','leadHours','requireConfirmation','holdMinutes','allowClientCancel'].map(k=>[k,state.settings[k]]));
