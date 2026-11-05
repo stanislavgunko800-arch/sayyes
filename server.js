@@ -71,7 +71,7 @@ http.createServer(async(req,res)=>{
   if(sessionToken!==null)cookie(res,sessionToken);return send(res,200,result);
  }
  if(url.startsWith('/api/'))return send(res,404,{error:'Метод не найден'});
- const assets={'/pos-domain.js':'pos-domain.js','/bar-domain.js':'bar-domain.js','/schedule-engine.js':'schedule-engine.js','/access-policy.js':'access-policy.js','/reports.js':'reports.js','/logo.png':'logo.png','/operations.js':'operations.js','/domain.js':'domain.js','/app.js':'app.js','/style.css':'style.css'};const asset=assets[url]||'index.html';
- res.writeHead(200,{'Content-Type':asset.endsWith('.png')?'image/png':asset.endsWith('.js')?'text/javascript':asset.endsWith('.css')?'text/css':'text/html; charset=utf-8'});res.end(await readFile(path.join(root,'public',asset)));
+ const assets={'/menu-seed.js':'menu-seed.js','/pos-domain.js':'pos-domain.js','/bar-domain.js':'bar-domain.js','/schedule-engine.js':'schedule-engine.js','/access-policy.js':'access-policy.js','/reports.js':'reports.js','/logo.png':'logo.png','/operations.js':'operations.js','/domain.js':'domain.js','/app.js':'app.js','/style.css':'style.css'};const asset=/^\/menu\/(curd-ring|cookie|date-candies|syrniki|pancakes|mac-cheese|pumpkin-soup)\.jpg$/.test(url)?url.slice(1):assets[url]||'index.html';
+ res.writeHead(200,{'Content-Type':asset.endsWith('.jpg')?'image/jpeg':asset.endsWith('.png')?'image/png':asset.endsWith('.js')?'text/javascript':asset.endsWith('.css')?'text/css':'text/html; charset=utf-8'});res.end(await readFile(path.join(root,'public',asset)));
  }catch(e){send(res,e.status||400,{error:e.message});}
 }).listen(Number(process.env.PORT||3000),process.env.HOST||'0.0.0.0',()=>console.log('SayYes listening on port '+(process.env.PORT||3000)));

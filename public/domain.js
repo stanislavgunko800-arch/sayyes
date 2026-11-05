@@ -1,3 +1,4 @@
+import {seedSayYesMenu} from './menu-seed.js';
 import {scheduleMinutes,scheduleBreaks,defaultAbsenceTypes,applyScheduleEntries} from './schedule-engine.js';
 import {extendState, extendedMutation, receipts, payoutTotals} from './operations.js';
 export const uid=()=>globalThis.crypto?.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2);
@@ -9,6 +10,7 @@ const required=v=>{const s=String(v??'').trim();if(!s)throw Error('Заполн�
 const validDate=d=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||new Date(d+'T12:00:00Z').toISOString().slice(0,10)!==d)throw Error('Неверная дата');return d;};
 export function initial(){return upgrade({employees:['Анна','Мария','Елена','Нино','София','Тамара','Екатерина'].map((name,i)=>({id:String(i+1),name,role:i<3?'Стилист':i<5?'Нейл-мастер':'Бровист'})),services:[{id:'1',name:'Стрижка и укладка',price:80,duration:60},{id:'2',name:'Окрашивание',price:180,duration:120},{id:'3',name:'Маникюр с покрытием',price:65,duration:90},{id:'4',name:'Оформление бровей',price:40,duration:30}]});}
 export function upgrade(s){for(const k of ['employees','services','clients','appointments','schedules','shifts','cash','advances','expenses','products','purchases','movements','suppliers','warehouses','workplaces','promotions','audit','categories','units','productTypes'])s[k]??=[];
+ seedSayYesMenu(s);
  s.settings={name:'SayYes',address:'',phone:'',email:'',slug:'sayyes',online:true,slotStep:30,leadHours:0,loyaltyPercent:0,reviewGoogle:'',reviewOther:'',...s.settings};
  if(!s.warehouses.length)s.warehouses.push({id:'main',name:'Основной склад'});
  for(const e of s.employees){e.commission??=0;e.active??=true;e.onlineEnabled??=true;e.positionId??='';e.phone??='';e.email??='';e.description??='';e.fired??=false;e.archived??=false;e.serviceIds??=null;}
