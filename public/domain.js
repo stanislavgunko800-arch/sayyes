@@ -20,6 +20,7 @@ export function upgrade(s){for(const k of ['employees','services','clients','app
  for(const p of s.products){p.brand??='';p.lossFactor??=1;}
  for(const a of s.appointments)if(a.status==='paid'){a.amount??=a.price;a.paidDate??=a.date;}
  for(const p of s.purchases)p.locations??={[p.warehouseId]:p.remaining};
+ if(!s.salonLayoutVersion){const chairs=s.workplaces.filter(w=>/кресло/i.test(w.kind||''));for(let i=chairs.length;i<4;i++)s.workplaces.push({id:'sayyes-chair-'+(i+1),name:'Кресло '+(i+1),kind:'Кресло',zone:'Салон',x:10+(i%2)*40,y:15+Math.floor(i/2)*40,status:'Свободно'});s.salonLayoutVersion=1;}
  s.absenceTypes??=defaultAbsenceTypes();
  extendState(s);return s;
 }

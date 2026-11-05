@@ -21,7 +21,7 @@ export function posNormalizeOrder(s,b,existing,uid){
  const servicePercent=number(b.servicePercent??existing?.servicePercent??0,0,100),discountPercent=number(b.discountPercent??existing?.discountPercent??0,0,100),scheduledDate=date(b.scheduledDate||existing?.scheduledDate||posClock().date),scheduledTime=b.scheduledTime??existing?.scheduledTime??'';
  if(scheduledTime&&!/^([01]\d|2[0-3]):[0-5]\d$/.test(scheduledTime))throw Error('Неверное время заказа');
  const posPromotionId=b.posPromotionId??existing?.posPromotionId??'';if(posPromotionId&&!s.posPromotions.some(p=>p.id===posPromotionId))throw Error('Акция не найдена');
- const employee=s.employees.find(e=>e.id===b.employeeId);if(!employee||employee.fired||employee.archived)throw Error('Выберите действующего сотрудника');
+ const employee=s.employees.find(e=>e.id===b.employeeId);if(b.employeeId&&(!employee||employee.fired||employee.archived))throw Error('Выберите действующего сотрудника');
  return {orderType,guests,servicePercent,discountPercent,scheduledDate,scheduledTime,posPromotionId,deliveryName:String(b.deliveryName??existing?.deliveryName??'').slice(0,150),deliveryPhone:String(b.deliveryPhone??existing?.deliveryPhone??'').slice(0,50),deliveryAddress:String(b.deliveryAddress??existing?.deliveryAddress??'').slice(0,500)};
 }
 export function posMutation(s,action,b,{uid}){
