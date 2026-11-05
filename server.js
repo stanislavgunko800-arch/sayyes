@@ -29,6 +29,7 @@ http.createServer(async(req,res)=>{
  const visible={};for(const key of ['employees','services','schedules','workplaces'])visible[key]=structuredClone(state[key]);
  visible.employees=visible.employees.filter(e=>e.active).map(({id,name,role})=>({id,name,role,active:true}));
  visible.services=visible.services.filter(v=>v.active).map(({id,name,price,duration,employeeIds,category})=>({id,name,price,duration,employeeIds,category,active:true,materials:[],baseCost:0}));
+ visible.bookingLinks=state.bookingLinks.filter(l=>l.active).map(({id,serviceId,employeeId})=>({id,serviceId,employeeId}));
  visible.settings=Object.fromEntries(['name','address','phone','description','online','slotStep','leadHours','requireConfirmation','holdMinutes','allowClientCancel'].map(k=>[k,state.settings[k]]));
  visible.appointments=state.appointments.filter(a=>!['cancelled','refunded'].includes(a.status)).map(a=>({employeeId:a.employeeId,workplaceId:a.workplaceId,date:a.date,start:a.start,duration:a.duration,status:'booked'}));
  visible.holds=state.holds.filter(h=>h.expiresAt>Date.now()&&h.token!==req.headers['x-booking-hold']).map(({token,...h})=>h);return send(res,200,visible);
@@ -48,7 +49,7 @@ http.createServer(async(req,res)=>{
 
   const task=queue.then(async()=>{const previous=structuredClone(state);try{const next=structuredClone(state);mutate(next,action,b);await writeFile(file+'.tmp',JSON.stringify(next));await rename(file+'.tmp',file);state=next;}catch(e){state=previous;throw e;}});queue=task.catch(()=>{});await task;return send(res,200,{ok:true});
  }
- const asset=url==='/logo.png'?'logo.png':url==='/operations.js'?'operations.js':url==='/domain.js'?'domain.js':url==='/app.js'?'app.js':url==='/style.css'?'style.css':'index.html';
+ const asset=url==='/reports.js'?'reports.js':url==='/logo.png'?'logo.png':url==='/operations.js'?'operations.js':url==='/domain.js'?'domain.js':url==='/app.js'?'app.js':url==='/style.css'?'style.css':'index.html';
  res.writeHead(200,{'Content-Type':asset.endsWith('.png')?'image/png':asset.endsWith('.js')?'text/javascript':asset.endsWith('.css')?'text/css':'text/html; charset=utf-8'});res.end(await readFile(path.join(root,'public',asset)));
  }catch(e){send(res,400,{error:e.message});}
 }).listen(Number(process.env.PORT||3000),'0.0.0.0',()=>console.log('SayYes listening on port '+(process.env.PORT||3000)));

@@ -52,11 +52,12 @@ export function mutate(s,action,b){upgrade(s);const id=uid(),date=today(),find=(
  s.schedules=s.schedules.filter(x=>x.employeeId!==g.employeeId||x.date!==g.date);s.schedules.push(g);
  }else if(action==='appointments'){
  if(b.publicMode&&b.holdToken&&!s.holds.some(h=>h.token===b.holdToken&&h.expiresAt>Date.now()&&h.employeeId===b.employeeId&&h.serviceId===b.serviceId&&h.date===b.date&&h.time===b.time))throw Error('Бронь истекла. Выберите время снова');
+ const link=b.publicMode&&b.bookingLinkId?find('bookingLinks',b.bookingLinkId):null;if(link&&!link.active)throw Error('Ссылка записи отключена');
  const v=find('services',b.serviceId),e=find('employees',b.employeeId);validDate(b.date);required(b.name);const phone=required(b.phone);
  if(!slots(s,e.id,v.id,b.date,!!b.publicMode,b.holdToken||'').includes(b.time))throw Error('Время недоступно. Выберите свободное окно');
- let c=s.clients.find(c=>c.phone===phone);if(c?.blocked)throw Error('Онлайн-запись для этого клиента недоступна');if(!c){c={id:uid(),name:b.name,phone,tags:'',source:b.publicMode?'Онлайн':'Салон',note:'',blocked:false};s.clients.push(c);}
+ let c=s.clients.find(c=>c.phone===phone);if(c?.blocked)throw Error('Онлайн-запись для этого клиента недоступна');if(!c){c={id:uid(),name:b.name,phone,tags:'',source:link?.source||(b.publicMode?'Онлайн':'Салон'),note:'',blocked:false};s.clients.push(c);}
  if(b.workplaceId){find('workplaces',b.workplaceId);const t=mins(b.time);if(s.appointments.some(a=>a.workplaceId===b.workplaceId&&a.date===b.date&&a.status!=='cancelled'&&t<a.start+a.duration&&t+v.duration>a.start))throw Error('Рабочее место занято');}
- s.appointments.push({id,clientId:c.id,name:c.name,serviceId:v.id,service:v.name,price:v.price,duration:v.duration,employeeId:e.id,date:b.date,time:b.time,start:mins(b.time),status:b.publicMode&&s.settings.requireConfirmation?'pending':'booked',workplaceId:b.workplaceId||'',note:String(b.note||''),manageToken:b.publicMode?String(b.manageToken||''):'',promotionId:s.promotions.some(p=>p.id===b.promotionId&&p.active&&date>=p.start&&date<=p.end)?b.promotionId:''});
+ s.appointments.push({id,createdAt:new Date().toISOString(),source:link?.source||(b.publicMode?'Онлайн':'Салон'),bookingLinkId:link?.id||'',clientId:c.id,name:c.name,serviceId:v.id,service:v.name,price:v.price,duration:v.duration,employeeId:e.id,date:b.date,time:b.time,start:mins(b.time),status:b.publicMode&&s.settings.requireConfirmation?'pending':'booked',workplaceId:b.workplaceId||'',note:String(b.note||''),manageToken:b.publicMode?String(b.manageToken||''):'',promotionId:s.promotions.some(p=>p.id===b.promotionId&&p.active&&date>=p.start&&date<=p.end)?b.promotionId:''});
  s.holds=s.holds.filter(h=>h.token!==b.holdToken);
  }else if(action==='status'){
  const a=find('appointments',b.id);if(!['booked','pending'].includes(a.status))throw Error('Запись уже закрыта');if(!['paid','cancelled'].includes(b.status))throw Error('Неверный статус');

@@ -16,7 +16,10 @@ test('protected admin API and public booking expose no client or financial data'
   assert.equal((await fetch(base+'/api/state',{headers:{Authorization:auth}})).status,200);
   const visible=await (await fetch(base+'/api/public-state')).json();assert(!('clients'in visible));assert(!('sales'in visible));assert(!('commission'in visible.employees[0]));
   const post=(path,b,headers={})=>fetch(base+path,{method:'POST',headers:{'Content-Type':'application/json',...headers},body:JSON.stringify(b)});
-  const holdToken=crypto.randomUUID(),manageToken=crypto.randomUUID(),booking={employeeId:'1',serviceId:'1',date:'2027-12-10',time:'10:00'};
+  const reportModule=await fetch(base+'/reports.js');assert.match(reportModule.headers.get('content-type'),/javascript/);assert.match(await reportModule.text(),/function workloadReport/);
+  assert.equal((await post('/api/booking-link',{name:'Private campaign',source:'Private source',serviceId:'1',employeeId:'1'},{Authorization:auth})).status,200);
+  const publicLinks=(await (await fetch(base+'/api/public-state')).json()).bookingLinks;assert.equal(publicLinks.length,1);assert(!JSON.stringify(publicLinks).includes('Private'));assert(!('source'in publicLinks[0]));
+  const holdToken=crypto.randomUUID(),manageToken=crypto.randomUUID(),booking={employeeId:'1',serviceId:'1',date:'2027-12-10',time:'10:00',bookingLinkId:publicLinks[0].id};
   assert.equal((await post('/api/hold-slot',{...booking,token:holdToken})).status,200);
   assert.equal((await post('/api/public-book',{...booking,holdToken,manageToken,name:'Secret Client',phone:'555'})).status,200);
   const after=await (await fetch(base+'/api/public-state')).json();const serialized=JSON.stringify(after);assert(!serialized.includes('Secret Client'));assert(!serialized.includes('555'));assert(!serialized.includes(manageToken));assert.equal(after.appointments.length,1);

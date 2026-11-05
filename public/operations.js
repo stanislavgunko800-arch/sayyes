@@ -5,7 +5,7 @@ const textValue = v => { const t=String(v??'').trim();if(!t)throw Error('Зап�
 const dateValue = d => { if(!/^\d{4}-\d{2}-\d{2}$/.test(d)||new Date(d+'T12:00Z').toISOString().slice(0,10)!==d)throw Error('Неверная дата');return d; };
 const get = (s,k,id) => { const v=s[k].find(x=>x.id===id);if(!v)throw Error('Запись не найдена: '+k);return v; };
 export function extendState(s){
- for(const k of ['sales','purchaseDocuments','payouts','workplaceShifts','bonusLedger','inventories','messageTemplates','outbox','schedulePatterns','expenseTemplates','supplierOrders','zones','holds','barOrders','importBatches'])s[k]??=[];
+ for(const k of ['sales','purchaseDocuments','payouts','workplaceShifts','bonusLedger','inventories','messageTemplates','outbox','schedulePatterns','expenseTemplates','supplierOrders','zones','holds','barOrders','importBatches','bookingLinks'])s[k]??=[];
  s.paymentMethods??=[{id:'cash',name:'Наличные',kind:'cash',fee:0,active:true},{id:'card',name:'Терминал',kind:'card',fee:0,active:true},{id:'transfer',name:'Перевод',kind:'transfer',fee:0,active:true}];
  s.terminals??=[];
  s.settings={holdMinutes:10,requireConfirmation:false,allowClientCancel:true,lateCancelHours:24,loyaltyActive:true,productBonusPercent:0,bonusMaxPercent:30,bonusExpiryMonths:0,familyBonus:false,familyBonusRates:{},...s.settings};
@@ -38,7 +38,11 @@ function moneyOut(s,amount,reason,method){
 function notification(s,event,a){const template=s.messageTemplates.find(t=>t.event===event&&t.active);if(!template)return;const vars={client:a.name,service:a.service,date:a.date,time:a.time,salon:s.settings.name};const body=template.body.replace(/\{(\w+)\}/g,(all,k)=>vars[k]??all);s.outbox.push({id:uid(),date:today(),event,appointmentId:a.id,body,status:'Не отправлено — канал не подключён'});}
 export function extendedMutation(s,action,b){
  const date=today(),id=uid();
- if(action==='bar-order'){
+ if(action==='booking-link'){
+  if(b.serviceId)get(s,'services',b.serviceId);if(b.employeeId)get(s,'employees',b.employeeId);
+  const entry={id:b.id||id,name:textValue(b.name),serviceId:b.serviceId||'',employeeId:b.employeeId||'',source:String(b.source||'Онлайн'),active:b.active!==false};
+  if(b.id)Object.assign(get(s,'bookingLinks',b.id),entry);else s.bookingLinks.push(entry);
+ }else if(action==='bar-order'){
   const orderId=textValue(b.id),existing=s.barOrders.find(o=>o.id===orderId);
   if(existing&&(!['open','ready'].includes(existing.status)||existing.version!==Number(b.version)))throw Error('Заказ изменён или закрыт. Откройте его заново');
   if(!existing&&Number(b.version||0)!==0)throw Error('Заказ не найден');
