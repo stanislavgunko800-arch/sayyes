@@ -1,3 +1,4 @@
+import {seedSayYesStaff} from './public/staff-seed.js';
 import http from 'node:http';
 import {readFile,writeFile,mkdir,rename} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
@@ -8,6 +9,7 @@ import {authorizeMutation,projectState} from './lib/authorization.js';
 const root=path.dirname(fileURLToPath(import.meta.url)),dir=process.env.DATA_DIR||path.join(root,'data');
 await mkdir(dir,{recursive:true});const file=path.join(dir,'salon.json');let state;
 try{state=upgrade(JSON.parse(await readFile(file,'utf8')));}catch(e){if(e.code!=='ENOENT')throw e;state=initial();await writeFile(file,JSON.stringify(state),{mode:0o600});}
+if(seedSayYesStaff(state)){state=upgrade(state);await writeFile(file+'.tmp',JSON.stringify(state),{mode:0o600});await rename(file+'.tmp',file);}
 const adminPassword=process.env.ADMIN_PASSWORD||'';
 if(process.env.NODE_ENV==='production'&&adminPassword.length<12)throw Error('Для production задайте ADMIN_PASSWORD длиной от 12 символов');
 const publicApi=new Set(['/api/public-state','/api/manage-booking','/api/public-book','/api/hold-slot','/api/cancel-booking','/api/auth/session','/api/auth/login','/api/auth/logout','/api/auth/invite','/api/auth/accept']);
@@ -32,8 +34,8 @@ http.createServer(async(req,res)=>{
  if(url==='/api/public-state'&&req.method==='GET'){
  const visible={};for(const key of ['employees','services','schedules','workplaces'])visible[key]=structuredClone(state[key]);
  visible.schedules=visible.schedules.map(({employeeId,date,start,end,off,breakStart,breakEnd,breaks})=>({employeeId,date,start,end,off,breakStart,breakEnd,breaks}));
- visible.employees=visible.employees.filter(e=>e.active&&!e.fired&&!e.archived&&e.onlineEnabled!==false).map(({id,name,role,serviceIds})=>({id,name,role,serviceIds,active:true}));
- visible.services=visible.services.filter(v=>v.active).map(({id,name,price,duration,employeeIds,category})=>({id,name,price,duration,employeeIds,category,active:true,materials:[],baseCost:0}));
+ visible.employees=visible.employees.filter(e=>e.active&&!e.fired&&!e.archived&&e.onlineEnabled!==false).map(({id,name,role,photo,serviceIds})=>({id,name,role,photo,serviceIds,active:true}));
+ visible.services=visible.services.filter(v=>v.active).map(({id,name,price,priceFrom,duration,employeeIds,category})=>({id,name,price,priceFrom,duration,employeeIds,category,active:true,materials:[],baseCost:0}));
  visible.bookingLinks=state.bookingLinks.filter(l=>l.active).map(({id,serviceId,employeeId})=>({id,serviceId,employeeId}));
  visible.settings=Object.fromEntries(['name','address','phone','description','online','slotStep','leadHours','requireConfirmation','holdMinutes','allowClientCancel'].map(k=>[k,state.settings[k]]));
  visible.appointments=state.appointments.filter(a=>!['cancelled','refunded'].includes(a.status)).map(a=>({employeeId:a.employeeId,workplaceId:a.workplaceId,date:a.date,start:a.start,duration:a.duration,status:'booked'}));
@@ -71,7 +73,7 @@ http.createServer(async(req,res)=>{
   if(sessionToken!==null)cookie(res,sessionToken);return send(res,200,result);
  }
  if(url.startsWith('/api/'))return send(res,404,{error:'Метод не найден'});
- const assets={'/service-seed.js':'service-seed.js','/menu-seed.js':'menu-seed.js','/pos-domain.js':'pos-domain.js','/bar-domain.js':'bar-domain.js','/schedule-engine.js':'schedule-engine.js','/access-policy.js':'access-policy.js','/reports.js':'reports.js','/logo.png':'logo.png','/operations.js':'operations.js','/domain.js':'domain.js','/app.js':'app.js','/style.css':'style.css'};const asset=/^\/menu\/(curd-ring|cookie|date-candies|syrniki|pancakes|mac-cheese|pumpkin-soup)\.jpg$/.test(url)?url.slice(1):assets[url]||'index.html';
+ const assets={'/service-seed.js':'service-seed.js','/menu-seed.js':'menu-seed.js','/pos-domain.js':'pos-domain.js','/bar-domain.js':'bar-domain.js','/schedule-engine.js':'schedule-engine.js','/access-policy.js':'access-policy.js','/reports.js':'reports.js','/logo.png':'logo.png','/operations.js':'operations.js','/domain.js':'domain.js','/app.js':'app.js','/style.css':'style.css'};const staffAsset=/^\/staff\/(araik|julia|sofia|alexander|anneta|violetta|anka|sasha|mariam|alla)\.jpg$/.test(url);const asset=staffAsset?url.slice(1):/^\/menu\/(curd-ring|cookie|date-candies|syrniki|pancakes|mac-cheese|pumpkin-soup)\.jpg$/.test(url)?url.slice(1):assets[url]||'index.html';
  res.writeHead(200,{'Content-Type':asset.endsWith('.jpg')?'image/jpeg':asset.endsWith('.png')?'image/png':asset.endsWith('.js')?'text/javascript':asset.endsWith('.css')?'text/css':'text/html; charset=utf-8'});res.end(await readFile(path.join(root,'public',asset)));
  }catch(e){send(res,e.status||400,{error:e.message});}
 }).listen(Number(process.env.PORT||3000),process.env.HOST||'0.0.0.0',()=>console.log('SayYes listening on port '+(process.env.PORT||3000)));

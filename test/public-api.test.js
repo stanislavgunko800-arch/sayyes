@@ -1,12 +1,14 @@
+import {initial} from '../public/domain.js';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
-import {mkdtemp,rm} from 'node:fs/promises';
+import {mkdtemp,rm,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {once} from 'node:events';
 test('protected admin API and public booking expose no client or financial data',async()=>{
  const dir=await mkdtemp(join(tmpdir(),'sayyes-public-')),port=3297,password='test-only-password-123';
+ const fixture=initial();fixture.staffImports=['sayyes-staff-2026-11-06'];await writeFile(dir+'/salon.json',JSON.stringify(fixture));
  const child=spawn(process.execPath,['server.js'],{cwd:new URL('..',import.meta.url),env:{...process.env,PORT:String(port),DATA_DIR:dir,ADMIN_PASSWORD:password,NODE_ENV:'production'},stdio:['ignore','pipe','pipe']});
  const stopped=once(child,'exit');let log='';child.stderr.on('data',b=>log+=b);
  try{

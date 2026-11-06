@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
-import {mkdtemp,rm} from 'node:fs/promises';
+import {mkdtemp,rm,writeFile} from 'node:fs/promises';
 import {once} from 'node:events';
 import {initial,today} from '../public/domain.js';
 import {rolePermissions,normalizeAccess} from '../public/access-policy.js';
@@ -25,6 +25,7 @@ test('all role presets satisfy permission dependencies',()=>{for(const role of [
 test('personal accounts: invite lifecycle, session revocation, live rights, delegation, copy and transfer',async()=>{
  const dir=await mkdtemp('/tmp/sayyes-access-');
  const adminPassword='local-test-admin-12345',password='local-test-staff-12345';
+ const fixture=initial();fixture.staffImports=['sayyes-staff-2026-11-06'];await writeFile(dir+'/salon.json',JSON.stringify(fixture));
  const child=spawn(process.execPath,['server.js'],{env:{...process.env,HOST:'127.0.0.1',PORT:'3298',DATA_DIR:dir,ADMIN_PASSWORD:adminPassword},stdio:['ignore','pipe','inherit']});
  const root={Authorization:'Basic '+Buffer.from('admin:'+adminPassword).toString('base64')};
  const call=async(path,body,headers=root)=>{const r=await fetch('http://127.0.0.1:3298/api/'+path,{headers:{...headers,...(body?{'Content-Type':'application/json'}:{})},...(body?{method:'POST',body:JSON.stringify(body)}:{})});return {status:r.status,data:await r.json(),cookie:r.headers.get('set-cookie')?.split(';')[0]};};

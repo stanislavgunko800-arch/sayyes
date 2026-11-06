@@ -1,12 +1,14 @@
+import {initial} from '../public/domain.js';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
-import {mkdtemp,rm} from 'node:fs/promises';
+import {mkdtemp,rm,writeFile} from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import {once} from 'node:events';
 test('booking, overlap protection, payment, cancellation and persistence',async()=>{
  const dir=await mkdtemp(path.join(os.tmpdir(),'sayyes-test-'));
+ const fixture=initial();fixture.staffImports=['sayyes-staff-2026-11-06'];await writeFile(dir+'/salon.json',JSON.stringify(fixture));
  let child;
  const start=async()=>{child=spawn(process.execPath,['server.js'],{env:{...process.env,PORT:'3199',DATA_DIR:dir},stdio:['ignore','pipe','inherit']});await Promise.race([once(child.stdout,'data'),once(child,'exit').then(()=>{throw Error('Server exited before startup')})]);};
  const stop=async()=>{const done=once(child,'exit');child.kill();await done;};

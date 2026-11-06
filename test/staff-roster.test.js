@@ -1,0 +1,5 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {initial} from '../public/domain.js';
+import {seedSayYesStaff} from '../public/staff-seed.js';
+test('roster reconciliation preserves existing Sofia and history, archives former staff and revokes access once',()=>{const s=initial();s.appointments.push({id:'old-visit',employeeId:'1'});s.security={accounts:[{id:'acc',employeeId:'1',enabled:true,invite:{token:'old'}}],sessions:[{accountId:'acc'},{accountId:'root'}]};assert.equal(seedSayYesStaff(s),true);const active=s.employees.filter(e=>!e.archived);assert.equal(active.length,12);assert.equal(active.filter(e=>e.photo).length,10);assert.equal(active.find(e=>e.name==='София').id,'5');assert.equal(s.appointments[0].employeeId,'1');assert.equal(s.employees.find(e=>e.id==='1').active,false);assert.equal(s.security.accounts[0].enabled,false);assert.deepEqual(s.security.sessions,[{accountId:'root'}]);active[0].role='Обновлённая роль';assert.equal(seedSayYesStaff(s),false);assert.equal(active[0].role,'Обновлённая роль');});
