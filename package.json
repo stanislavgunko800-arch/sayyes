@@ -7,10 +7,18 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "test": "node --test",
-    "preview:build": "node scripts/build-preview.js",
-    "backup": "node scripts/backup.js"
+    "preview:build": "npm run build",
+    "backup": "node scripts/backup.js",
+    "motion:build": "node scripts/build-motion.js",
+    "build": "npm run motion:build && node scripts/build-preview.js"
   },
   "engines": {
     "node": ">=22"
+  },
+  "dependencies": {
+    "motion": "^14.9.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }
