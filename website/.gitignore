@@ -1,0 +1,6 @@
+node_modules/
+work/
+*.tar.gz
+.DS_Store
+
+__pycache__/

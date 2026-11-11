@@ -1,0 +1,19 @@
+{
+  "name": "sayyes-beauty-space",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node --check src/app.js",
+    "test": "python3 test/locales.py && node test/video-runtime.mjs",
+    "test:media": "python3 test/video.py"
+  },
+  "dependencies": {
+    "gsap": "^3.15.1",
+    "motion": "^14.9.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}
