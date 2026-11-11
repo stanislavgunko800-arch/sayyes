@@ -1,0 +1,27 @@
+{
+  "source": "Owner-uploaded screen recordings",
+  "shots": [
+    {
+      "id": "craft",
+      "file": "ScreenRecording_11-06-2026 18-01-42_1.mov",
+      "start": 3.0,
+      "duration": 3.4,
+      "crop": "1044:1392:30:760"
+    },
+    {
+      "id": "hair",
+      "file": "ScreenRecording_11-06-2026 18-03-47_1.MP4",
+      "start": 1.0,
+      "duration": 3.4,
+      "crop": "1056:1408:60:350"
+    },
+    {
+      "id": "makeup",
+      "file": "ScreenRecording_11-06-2026 18-07-40_1.mov",
+      "start": 3.8,
+      "duration": 2.6,
+      "crop": "1050:1400:80:130"
+    }
+  ],
+  "notes": "Cropped social UI and baked captions. No generative replacement. Silent montage with 0.3-second crossfades. Four uploads exceed 32 MiB transfer limit."
+}

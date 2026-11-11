@@ -1,0 +1,570 @@
+{
+  "navItems": [
+    {
+      "label": "о нас",
+      "href": "#about"
+    },
+    {
+      "label": "меню",
+      "href": "#menu"
+    },
+    {
+      "label": "игра",
+      "href": "#mood-game"
+    },
+    {
+      "label": "услуги",
+      "href": "#services"
+    },
+    {
+      "label": "история",
+      "href": "#story"
+    },
+    {
+      "label": "контакты",
+      "href": "#contacts"
+    }
+  ],
+  "tagline": "beauty · coffee · bar",
+  "footerText": "with love, Say Yes team",
+  "logo": "/uploads/91a04fc2-35d0-4d55-b95d-4db558e21112.webp",
+  "favicon": "/uploads/3c2ecb61-c599-4377-9ed7-99d0934195af.webp",
+  "seo": {
+    "title": "Say Yes Beauty Space | Салон красоты и кафе-бар в Сабуртало",
+    "description": "Say Yes Beauty Space в Тбилиси: бьюти-услуги, кофе, завтраки, десерты, коктейли, уходовая продукция и уютное пространство в Сабуртало.",
+    "url": "https://sayyes.framer.ai/",
+    "image": "/images/interior-bar-gloss.jpg"
+  },
+  "hero": {
+    "eyebrow": "beauty space | coffee | bar",
+    "title": "SAY YES",
+    "subtitle": "to new beauty, coffee and inspiration",
+    "lead": "Бьюти-пространство и кафе-бар в самом сердце Сабуртало, где можно позаботиться о себе и приятно провести время. ",
+    "image": "/images/interior-bar-gloss.jpg"
+  },
+  "about": {
+    "lead": "Say Yes — больше, чем салон красоты. \r\nЭто городское пространство для красоты и отдыха.",
+    "paragraphs": [
+      "Мы создали все так, чтобы вам было легко переключиться: прийти на бьюти-сервис, остаться на кофе, встретиться с друзьями или выбрать уход домой.",
+      "У нас вы получаете именно тот результат, который ожидаете — благодаря сильной команде специалистов, вниманию к деталям и комфортной, тёплой атмосфере, в которую хочется возвращаться снова и снова."
+    ],
+    "image": "/uploads/882d42a4-cfa7-4533-a1f3-e429cd830951.webp"
+  },
+  "founder": {
+    "title": "От основателя",
+    "quote": "\"Для меня важно, чтобы человек приходил не только за услугой, а за состоянием: уверенностью, легкостью и тем самым внутренним «да». \r\nЯ искренне благодарю вас за выбор и доверие\"",
+    "name": "Ирина Гвоздева ",
+    "role": "основатель Say Yes Beauty | coffee | bar",
+    "image": "/uploads/a90d95f1-be09-47c5-b364-2d9156093497.webp"
+  },
+  "menuIntro": {
+    "button": "Меню",
+    "heading": "Coffee bar",
+    "text": "Не просто кафе-бар: а сердце нашего пространства. \r\nКачественный кофе, вкусная еда и атмосфера, в которой приятно проводить время - до, после и даже без записи на сервисы. ",
+    "images": [
+      "/uploads/b6308ff0-bfa1-441b-a0ba-3f6e52dc4a44.webp",
+      "/uploads/8c5c52b3-4fc1-49d3-8971-a2d21f43d5ee.webp",
+      "/uploads/eef15992-5dfa-453a-b378-711d045f4c7e.webp"
+    ]
+  },
+  "highlights": [
+    {
+      "icon": "scissors",
+      "label": "Опытная команда экспертов",
+      "text": "большая и сильная команда, которая знает, что делает"
+    },
+    {
+      "icon": "map",
+      "label": "удобная локация",
+      "text": "Тбилиси, Мераб Костава 71 \r\n(1 мин от м.Технический Университет)"
+    },
+    {
+      "icon": "heart",
+      "label": "гарантия результата",
+      "text": "несем ответственность за качество каждой услуги"
+    },
+    {
+      "icon": "sparkles",
+      "label": "pet-friendly",
+      "text": "мы понимаем, как важно не расставаться с любимцами"
+    }
+  ],
+  "story": [
+    {
+      "year": "основатель",
+      "title": "Человек за брендом",
+      "text": "Проект основан Ириной Гвоздевой - ее опыт в beauty-индустрии более 14 лет, опыт мастера и ведущего технолога компании Wella Professionals помогли создать свою команду, атмосферу и место, в котором совпадают профессионализм, эстетика и душевность."
+    },
+    {
+      "year": "переезды",
+      "title": "Путь перемен",
+      "text": "C 2022 года было два переезда, две локации, два важных этапа.\r\nПространства 150м2 и 250м2 стали местом, где мы росли, развивались, открыли бар и фотостудию, объединяли людей и создавали ту самую атмосферу, которая является частью нашей истории."
+    },
+    {
+      "year": "сейчас",
+      "title": "Третий дом",
+      "text": "Компактное, цельное и продуманное пространство в центре Сабуртало, созданное с нуля своими руками в одной из лучших локаций Тбилиси."
+    }
+  ],
+  "featureList": [
+    "Бьюти-услуги для женщин, мужчин и детей",
+    "Полноценный кафе-бар с напитками и едой",
+    "Уютная терраса и интерьерные зоны для встреч",
+    "Тематические вечера, лекции и мастер-классы",
+    "Профессиональная уходовая продукция",
+    "Индивидуальные программы по обучению"
+  ],
+  "menuGroups": [
+    {
+      "id": "food",
+      "label": "Еда",
+      "title": "Завтраки и десерты",
+      "intro": "Нежные сырники, творожное кольцо, чизкейк и теплые блюда к кофе.",
+      "image": "/uploads/syrniki-plate.jpg",
+      "accent": "warm",
+      "icon": "utensils",
+      "showImages": true,
+      "sections": [
+        {
+          "title": "Десерты",
+          "items": [
+            {
+              "name": "Творожное колечко",
+              "description": "Снаружи из заварного теста, а внутри — нежный крем из творога.\r\nКлассическое или с вкусом на выбор.",
+              "price": "15 gel",
+              "image": "/uploads/af463bb7-f578-4507-9f10-eb4b6d6fc5ec.webp"
+            },
+            {
+              "name": "Кукис",
+              "description": "Шоколадный с дропсами, плотный, красивый и очень честный.",
+              "price": "10 gel",
+              "image": "/images/chocolate-cookies.jpg"
+            },
+            {
+              "name": "Финиковые конфеты",
+              "description": "Финики, кокосовая стружка, орехи и какао без добавленного сахара.",
+              "price": "5 gel",
+              "image": "/images/date-candies.jpg"
+            }
+          ]
+        },
+        {
+          "title": "Завтраки и теплые блюда",
+          "items": [
+            {
+              "name": "Сырники",
+              "description": "Три нежных сырника со сметаной и клубничным топингом или сгущенкой.\r\nКлассические или с курагой на выбор.",
+              "price": "20 gel",
+              "image": "/images/syrniki-plate.jpg"
+            },
+            {
+              "name": "Блины",
+              "description": "На выбор: классические и с лососем.\r\nПодаются с сметаной.",
+              "price": "18 / 20 gel",
+              "image": "/uploads/24abe033-d2d2-481b-94bb-625597208561.webp"
+            },
+            {
+              "name": "Mac & cheese",
+              "description": "Классика, с курицей или с рваной свининой bbq.",
+              "price": "14 / 16 / 18 gel",
+              "image": "/uploads/528203a3-c621-46c4-833a-57299277cf69.webp"
+            },
+            {
+              "name": "Тыквенный суп с креветками",
+              "description": "Сытный, ароматный, с сбалансированным вкусом.",
+              "price": "25 gel",
+              "image": "/uploads/89968265-f3a9-4390-a341-ade4615b7acd.webp"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hot",
+      "label": "Горячие напитки",
+      "title": "Кофе и какао",
+      "intro": "Кофе, который держит настроение: от эспрессо до большого латте.",
+      "image": "/uploads/latte-art.jpg",
+      "accent": "cream",
+      "icon": "coffee",
+      "showImages": false,
+      "sections": [
+        {
+          "title": "Кофе",
+          "items": [
+            {
+              "name": "Эспрессо / двойной",
+              "description": "Насыщенный кофейный шот из свежемолотых зерен.",
+              "price": "6 / 11 gel",
+              "image": "/images/generated-espresso.jpg"
+            },
+            {
+              "name": "Американо",
+              "description": "Эспрессо, разбавленный горячей водой: мягкий и легкий.",
+              "price": "7 gel",
+              "image": "/images/generated-espresso.jpg"
+            },
+            {
+              "name": "Капучино",
+              "description": "Эспрессо с бархатистой молочной пеной.",
+              "price": "10 gel",
+              "image": "/images/generated-cappuccino.jpg"
+            },
+            {
+              "name": "Латте",
+              "description": "Мягкий кофейный напиток с большим количеством горячего молока.",
+              "price": "12 gel",
+              "image": "/images/latte-art.jpg"
+            },
+            {
+              "name": "Flat White",
+              "description": "Крепкий эспрессо с тонким слоем шелковистой микропены.",
+              "price": "12 gel",
+              "image": "/images/generated-cappuccino.jpg"
+            },
+            {
+              "name": "Irish / Baileys coffee",
+              "description": "Кофе с ирландским виски или ликером Baileys.",
+              "price": "15 gel",
+              "image": "/images/interior-bar-gloss.jpg"
+            }
+          ]
+        },
+        {
+          "title": "Чай и сладкое тепло",
+          "items": [
+            {
+              "name": "Сезонный чай",
+              "description": "Ароматный чай с сезонными фруктами и добавками.",
+              "price": "12 gel",
+              "image": "/images/generated-seasonal-tea.jpg"
+            },
+            {
+              "name": "Травяной / Эрл грей",
+              "description": "Травяной сбор или классический черный чай с бергамотом.",
+              "price": "8 gel",
+              "image": "/images/generated-seasonal-tea.jpg"
+            },
+            {
+              "name": "Какао / горячий шоколад",
+              "description": "Классический, с маршмеллоу или густой шоколадный.",
+              "price": "10 / 12 / 13 gel",
+              "image": "/images/chocolate-cookies.jpg"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cold",
+      "label": "Холодные напитки",
+      "title": "Лимонады и cold coffee",
+      "intro": "Лед, ягоды, цитрус и визуальная свежесть в бокале.",
+      "image": "/uploads/lemonades.jpg",
+      "accent": "fresh",
+      "icon": "snowflake",
+      "showImages": false,
+      "sections": [
+        {
+          "title": "Кофе и соки",
+          "items": [
+            {
+              "name": "Эспрессо тоник",
+              "description": "Эспрессо и тоник с легкой цитрусовой горчинкой.",
+              "price": "12 gel",
+              "image": "/images/lemonades.jpg"
+            },
+            {
+              "name": "Холодный американо",
+              "description": "Классический черный кофе со льдом.",
+              "price": "6 gel",
+              "image": "/images/generated-iced-latte.jpg"
+            },
+            {
+              "name": "Холодный латте",
+              "description": "Нежный кофе с холодным молоком и льдом.",
+              "price": "12 gel",
+              "image": "/images/generated-iced-latte.jpg"
+            },
+            {
+              "name": "Кофе с мороженым",
+              "description": "Освежающий кофе с шариком ванильного мороженого.",
+              "price": "15 gel",
+              "image": "/images/generated-iced-latte.jpg"
+            },
+            {
+              "name": "Свежевыжатый сок",
+              "description": "Натуральный сок из свежих фруктов.",
+              "price": "12 gel",
+              "image": null
+            }
+          ]
+        },
+        {
+          "title": "Лимонады и газировка",
+          "items": [
+            {
+              "name": "Лимонад",
+              "description": "Цитрусовый или ягодный вкус на выбор.",
+              "price": "12 gel",
+              "image": "/images/generated-berry-lemonade.jpg"
+            },
+            {
+              "name": "Молочный коктейль",
+              "description": "Нежный молочный напиток с мороженым.",
+              "price": "15 gel",
+              "image": "/images/generated-berry-lemonade.jpg"
+            },
+            {
+              "name": "Coca-Cola / Sprite",
+              "description": "Classic, Zero или Sprite.",
+              "price": "3,50 gel",
+              "image": "/images/menu-board.jpg"
+            },
+            {
+              "name": "Schweppes / Red Bull",
+              "description": "Освежающий тоник или энергетический напиток.",
+              "price": "3,50 / 6 gel",
+              "image": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "alcohol",
+      "label": "Алкоголь",
+      "title": "Коктейли и вино",
+      "intro": "Вечерний свет, бокал на фактурном столе и аккуратный бар.",
+      "image": "/uploads/aperol.jpg",
+      "accent": "sunset",
+      "icon": "wine",
+      "showImages": false,
+      "sections": [
+        {
+          "title": "Вино, просекко, пиво",
+          "items": [
+            {
+              "name": "Вино 180 мл",
+              "description": "Белое сухое или полусладкое, красное сухое или полусладкое.",
+              "price": "15 gel",
+              "image": "/images/interior-bar-gloss.jpg"
+            },
+            {
+              "name": "Просекко D.O.C.",
+              "description": "Extra Dry 150 мл или бутылка Extra Dry / Brut 750 мл.",
+              "price": "15 / 70 / 90 gel",
+              "image": "/images/aperol.jpg"
+            },
+            {
+              "name": "Heineken / Corona Extra",
+              "description": "Пиво 0,33 л.",
+              "price": "10 gel",
+              "image": null
+            }
+          ]
+        },
+        {
+          "title": "Коктейли",
+          "items": [
+            {
+              "name": "Aperol Spritz",
+              "description": "Aperol, игристое вино и легкие цитрусовые ноты.",
+              "price": "20 gel",
+              "image": null
+            },
+            {
+              "name": "French 75",
+              "description": "Джин, игристое вино, лимонный сок и легкая сладость.",
+              "price": "20 gel",
+              "image": null
+            },
+            {
+              "name": "Gin Tonic",
+              "description": "Классическое сочетание джина и тоника.",
+              "price": "20 gel",
+              "image": null
+            },
+            {
+              "name": "Negroni / Bellini",
+              "description": "Итальянская горчинка или легкий фруктовый коктейль.",
+              "price": "20 gel",
+              "image": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "moodGallery": [
+    {
+      "title": "бар как сцена",
+      "text": "теплый бар, черный потолок и мягкий свет",
+      "image": "/uploads/d35aa51f-6ab7-48b7-8368-07d6f1500205.webp"
+    },
+    {
+      "title": "зеркала и линии",
+      "text": "геометрия салона, свет и отражения",
+      "image": "/images/salon-wide.jpg"
+    },
+    {
+      "title": "продуманные зоны",
+      "text": "рабочие зоны без шума, но с характером",
+      "image": "/uploads/6bf275fd-a88c-48dd-b585-4372d8d3983d.webp"
+    },
+    {
+      "title": "естественное освещение",
+      "text": "большие панорамные окна во всем пространстве",
+      "image": "/uploads/e4f50e8c-7b2d-4e85-acf1-39a0e2f2d8ed.webp"
+    },
+    {
+      "title": "уютная терраса",
+      "text": "встречи, кофе, разговоры и гости",
+      "image": "/uploads/71881e79-8dca-4900-a2a9-0c0f19cc16c2.webp"
+    },
+    {
+      "title": "menu wall",
+      "text": "меню как часть композиции",
+      "image": "/images/menu-board.jpg"
+    }
+  ],
+  "services": [
+    {
+      "title": "Волосы",
+      "text": "Стрижки, окрашивания, укладки, уходы, биозавивка и консультации без лишнего.",
+      "image": "/uploads/d1519ac9-83fa-4918-b97a-85530398e0f5.webp",
+      "sections": []
+    },
+    {
+      "title": "Ногтевой сервис",
+      "text": "Аккуратная форма, покрытие и детали, которые держат общий уровень образа.",
+      "image": "/uploads/c9959da5-f189-4be9-912e-15de77659ee5.webp",
+      "sections": []
+    },
+    {
+      "title": "Брови и ресницы",
+      "text": "Оформление, деликатная коррекция и выразительный, естественный результат.",
+      "image": "/uploads/d6d1710c-a72d-4de0-a17b-f3b2e9d1c135.webp",
+      "sections": []
+    },
+    {
+      "title": "Мужской уход",
+      "text": "Стрижки, борода, камуфляж и спокойный сервис без лишней суеты.",
+      "image": "/uploads/0a547ad3-f230-4203-aaec-3206c1721e89.webp",
+      "sections": []
+    },
+    {
+      "title": "Макияж",
+      "text": "Любая идея. Любое мероприятие. Любой референс. Сделаем все.",
+      "image": "/uploads/6bdeff8f-3625-4220-8aff-fdce686598b5.webp",
+      "sections": []
+    },
+    {
+      "title": "Дети",
+      "text": "С радостью создадим образ для вашего ребенка. \r\nОт 4 до 8 лет.",
+      "image": "/uploads/716a5896-5e0b-4ea3-bd73-d1351a784014.webp",
+      "sections": []
+    }
+  ],
+  "products": [
+    {
+      "title": "Профессиональный уход",
+      "text": "Подобранные средства для волос и кожи с консультацией специалистов.\r\nWella Professionals, Davines, Keune.",
+      "image": "/uploads/5e70574e-62f3-484c-8a86-75954c9b3342.webp"
+    },
+    {
+      "title": "Аксессуары",
+      "text": "Украшения и акценты, способные сделать образ завершенным и запоминающимся.",
+      "image": "/uploads/0fe74a6a-01e9-4a1d-836b-4cfdabb14760.webp"
+    },
+    {
+      "title": "Hair tools",
+      "text": "Инструменты для укладки волос.",
+      "image": "/uploads/ae024cb2-7eab-4354-a997-d9f790abbaaf.webp"
+    }
+  ],
+  "contacts": [
+    {
+      "label": "Telegram",
+      "href": "https://t.me/say_yes_beauty",
+      "icon": "message"
+    },
+    {
+      "label": "WhatsApp",
+      "href": "https://wa.me/995593616989",
+      "icon": "phone"
+    },
+    {
+      "label": "Instagram",
+      "href": "https://www.instagram.com/say_yes_beauty?igsh=MWd6ZmJrcXphMXp0MQ==",
+      "icon": "instagram"
+    },
+    {
+      "label": "Оставить отзыв",
+      "href": "https://www.google.com/maps/search/?api=1&query=Say%20Yes%20Beauty%20Space%20Tbilisi",
+      "icon": "map"
+    },
+    {
+      "label": "Запись онлайн",
+      "href": "https://dikidi.net/tr/profile/say_yes_beauty_space_887914",
+      "icon": "scissors"
+    }
+  ],
+  "copy": {
+    "hero": {
+      "cta1": "меню кафе",
+      "cta2": "записаться"
+    },
+    "game": {
+      "eyebrow": "dopamine break",
+      "heading": "Лови вайб",
+      "text": "Мини-игра на 30 секунд: ловите кофе, сияние, заботу и вечерний вайб. Чем быстрее клики, тем выше комбо и приятнее счет."
+    },
+    "gallery": {
+      "eyebrow": "inside",
+      "heading": "Создано с душой ",
+      "text": "Мы создавали интерьер так, чтобы захотелось задержаться чуть дольше — не из необходимости, а из удовольствия."
+    },
+    "menu": {
+      "eyebrow": "menu",
+      "heading": "Меню",
+      "text": "Завтраки, кофе, лимонады и коктейли в формате красивой витрины: сначала хочется смотреть, потом выбирать."
+    },
+    "about": {
+      "eyebrow": "about",
+      "heading": "О нас",
+      "cta": "связаться с нами "
+    },
+    "features": {
+      "eyebrow": "inside",
+      "heading": "Что у нас есть",
+      "text": "Все, что нужно для вашего beauty-day: профессиональный сервис, любимые услуги, хороший кофе и время для себя. "
+    },
+    "services": {
+      "eyebrow": "beauty",
+      "heading": "Сервисы ",
+      "text": "Все необходимые beauty-услуги для любого случая: от регулярного ухода до полной подготовки к важному событию. ",
+      "ctaLabel": "Записаться",
+      "ctaUrl": "https://dikidi.ru/887914"
+    },
+    "story": {
+      "eyebrow": "history",
+      "heading": "История Say Yes",
+      "text": "Про смелость начать заново, любовь к профессии и пространство, которое выросло из идеи одного человека в живое комьюнити."
+    },
+    "founder": {
+      "eyebrow": "founder"
+    },
+    "market": {
+      "eyebrow": "market",
+      "heading": "Уходовая продукция ",
+      "text": "Средства, которые продолжают салонный эффект дома: подобранные, понятные и красиво представленные."
+    },
+    "contacts": {
+      "eyebrow": "contacts",
+      "heading": "Место, где вас ждут ",
+      "text": "Напишите нам, запишитесь на услугу или оставьте отзыв на Google Maps.\r\nКонсультация бесплатно. ",
+      "image": "/uploads/f2b33e58-2145-4713-80d8-5f9c0515a21d.webp"
+    }
+  }
+}
